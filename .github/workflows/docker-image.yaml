@@ -1,0 +1,48 @@
+# name: Docker Image CI
+
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+
+# jobs:
+
+#   build-and-push:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - uses: actions/checkout@v4
+
+#     # Step 1: Log in to Amazon ECR
+#     - name: Configure AWS credentials
+#       uses: aws-actions/configure-aws-credentials@v2
+#       with:
+#         role-to-assume: arn:aws:iam::ACCOUNT_ID:role/ROLE_NAME   # Optional, for using an IAM role
+#         aws-region: us-east-1
+#         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+#     - name: Login to Amazon ECR
+#       run: |
+#         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+
+#     # Step 2: Build the Docker image
+#     - name: Build the Docker image
+#       run: |
+#         IMAGE_NAME=$(basename "$PWD")
+#         docker build . --file Dockerfile --tag $IMAGE_NAME:latest
+
+#     # Step 3: Tag the image with ECR repository URL
+#     - name: Tag the Docker image
+#       run: |
+#         IMAGE_NAME=$(basename "$PWD")
+#         ECR_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_NAME
+#         docker tag $IMAGE_NAME:latest $ECR_URI:latest
+
+#     # Step 4: Push the Docker image to ECR
+#     - name: Push the Docker image to ECR
+#       run: |
+#         IMAGE_NAME=$(basename "$PWD")
+#         ECR_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_NAME
+#         docker push $ECR_URI:latest

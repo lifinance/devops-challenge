@@ -1,0 +1,50 @@
+# name: CI Pipeline
+
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+
+# jobs:
+#   build:
+#     name: Build and Test
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     # Checkout the repository code
+#     - name: Checkout code
+#       uses: actions/checkout@v3
+
+#     # Set up the programming language environment (example: Node.js)
+#     - name: Set up Node.js
+#       uses: actions/setup-node@v3
+#       with:
+#         node-version: '14'
+
+#     # Install dependencies
+#     - name: Install dependencies
+#       run: npm install
+
+#     # Run tests
+#     - name: Run tests
+#       run: npm test
+
+#   # Post success or failure message to the pull request
+#   notify:
+#     name: Notify GitHub PR
+#     runs-on: ubuntu-latest
+#     needs: build
+#     steps:
+#     - name: Post status to PR
+#       uses: actions/github-script@v6
+#       with:
+#         script: |
+#           const status = "${{ job.status }}";
+#           const message = status === 'success' 
+#             ? ':white_check_mark: Build and tests passed!' 
+#             : ':x: Build or tests failed.';
+#           github.rest.issues.createComment({
+#             issue_number: context.payload.pull_request.number,
+#             owner: context.repo.owner,
+#             repo: context.repo.repo,
+#             body: message
+#           });
