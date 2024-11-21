@@ -1,0 +1,35 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      
+    steps:
+    - name: Testing workflow
+      uses: actions/checkout@v4
+
+    # - name: Maven test
+    #   run: mvn test
+    
+    # - name: Checkstyle
+    #   run: mvn checkstyle:checkstyle
+     
+    # - name: Set Java 11
+    #   uses: actions/setup-java@v3
+    #   with:
+    #     distribution: "temurin"
+    #     java-version: "11"
+    # - name: Setup Sonarqube
+    #   uses: warchant/setup-sonar-scanner@v7
+    # - name: Sonarqube scan
+    #   run:

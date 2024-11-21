@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bird-deployment
+  namespace: bird
+  labels:
+    app: bird
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: bird
+  template:
+    metadata:
+      labels:
+        app: bird
+    spec:
+      volumes:
+        - name: bird-release-pv
+          persistentVolumeClaim:
+            claimName: bird-release-pvc
+      containers:
+      - name: bird-container
+        image: "{{ .Values.image.repository }}:{{ .Values.image.birdTag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - mountPath: "/var/www/html"
+          name: bird-release-pv
+        ports:
+        - name: bird-web
+          containerPort: {{ .Values.ports.birdContainerPort }}
+        livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 4201
+              scheme: HTTP
+            periodSeconds: 5
+            initialDelaySeconds: 15
+            failureThreshold: 10
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+      - name: birdimage-container
+        image: "{{ .Values.image.repository }}:{{ .Values.image.birdImageTag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - mountPath: "/var/www/html"
+          name: bird-release-pv
+        ports:
+        - name: birdimage-web
+          containerPort: {{ .Values.ports.birdImageContainerPort }}
+        livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 4200
+              scheme: HTTP
+            periodSeconds: 5
+            initialDelaySeconds: 15
+            failureThreshold: 10 
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+      imagePullSecrets:
+        {{- range .Values.imagePullSecrets }}
+        - name: {{ .name }}
+        {{- end }}

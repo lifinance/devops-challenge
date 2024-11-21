@@ -1,0 +1,25 @@
+namespace: bird
+replicaCount: 1
+
+dockerSecret: ""
+
+image:
+  repository: 891376975226.dkr.ecr.us-east-1.amazonaws.com/private-example
+  birdTag: bird2.0
+  birdImageTag: birdimage1.0
+  pullPolicy: Always
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+imagePullSecrets:
+  - name: regcred
+
+ports:
+  birdContainerPort: 4201
+  birdImageContainerPort: 4200
