@@ -1,0 +1,24 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Testing workflow
+      run: echo "workflow works!"
+
+    # Step 1: Log in to Amazon ECR
+   
